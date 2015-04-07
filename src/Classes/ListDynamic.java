@@ -1,7 +1,13 @@
+package Classes;
+
+import Ifaces.ComparatorIF;
+import Ifaces.IteratorIF;
+import Ifaces.ListIF;
+
 /**
  * Created by Daniel Sánchez Paz on 28/3/15.
  */
-public class ListDynamic <T> implements ListIF<T>{
+public class ListDynamic <T> implements ListIF<T> {
 
     private T first;
     private ListIF<T> tail;
@@ -82,7 +88,7 @@ public class ListDynamic <T> implements ListIF<T>{
     }
 
     /**
-     * Obtiene el número de lementos de la lista
+     * Obtiene el número de elementos de la lista
      *
      * @return el número de elementos de la lista
      */
@@ -219,7 +225,8 @@ public class ListDynamic <T> implements ListIF<T>{
         if (o == this) return true;
         if (o == null) return false;
 
-        if(!(o instanceof ListDynamic)) return false;
+        if(!(o instanceof ListDynamic))
+            return false;
         else{
             ListDynamic<T> l = (ListDynamic<T>) o;
             return l.first.equals(first) &&

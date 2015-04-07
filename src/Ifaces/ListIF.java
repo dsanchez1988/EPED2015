@@ -1,3 +1,5 @@
+package Ifaces;
+
 /**
  * Created by Daniel Sánchez Paz on 23/3/15.
  */

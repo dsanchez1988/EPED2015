@@ -1,20 +1,25 @@
+package Classes;
+
+import Ifaces.ListIF;
+import Ifaces.QueryDepot;
+
 /**
  * Created by dansanp on 18/3/15.
  */
 public class QueryDepotList implements QueryDepot {
 
-    private ListNode first;
+    private ListDynamic<Query> queryList;
 
     public QueryDepotList(){
-        this.first=null;
+        this.queryList = null;
     }
 
     /**
      * Devuelve el primer nodo de la lista
      * @return el primer nodo de la lista
      */
-    public ListNode getFirst(){
-        return first;
+    public ListDynamic<Query> getQueryList(){
+        return queryList;
     }
     /**
      * Devuelve el número de consultas diferentes (sin contar repeticiones)
@@ -24,7 +29,8 @@ public class QueryDepotList implements QueryDepot {
      */
     @Override
     public int numQueries() {
-        return 0;
+        //Obtengo la longitud usando el método de la clase DynamicList<T>
+        return queryList.getLength();
     }
 
     /**
@@ -66,7 +72,7 @@ public class QueryDepotList implements QueryDepot {
      * Decrementa en uno la frecuencia de una consulta en el depósito
      * Si la frecuencia decrementrada resultase ser 0, deberá eliminar
      * la información referente a la consulta del depósito
-     * (Precondición) la consulta debe estat ya en el depósito
+     * (Precondición) la consulta debe estar ya en el depósito
      *
      * @param q el texto de la consulta
      */

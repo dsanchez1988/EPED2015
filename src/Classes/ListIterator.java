@@ -1,3 +1,8 @@
+package Classes;
+
+import Ifaces.IteratorIF;
+import Ifaces.ListIF;
+
 /**
  * Created by Daniel Sánchez Paz on 29/3/15.
  */
@@ -7,7 +12,7 @@ public class ListIterator<T> implements IteratorIF<T> {
     private ListIF<T> restart;
 
     /**
-     * Constructor para ListIterator
+     * Constructor para Classes.ListIterator
      * @param handler el manejador de listas.
      */
     public ListIterator(ListIF<T> handler) {

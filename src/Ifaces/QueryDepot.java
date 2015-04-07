@@ -1,3 +1,9 @@
+package Ifaces;
+
+import Classes.Query;
+
+
+
 /**
  * Created by dansanp on 18/3/15.
  */
