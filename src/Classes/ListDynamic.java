@@ -45,7 +45,13 @@ public class ListDynamic <T> implements ListIF<T> {
      */
     @Override
     public ListIF<T> getTail() {
+        if(isEmpty())
+            return this;
         return tail;
+    }
+
+    public void setTail(ListIF<T> element){
+        this.tail=element;
     }
 
     /**
@@ -130,7 +136,21 @@ public class ListDynamic <T> implements ListIF<T> {
      */
     @Override
     public ListIF<T> sort(ComparatorIF<T> comparator) {
-        return null;
+        if (isEmpty())
+            return this;
+        else
+            return ((ListDynamic<T>) tail.sort(comparator)).sortInsert(first,
+                    comparator);
+    }
+
+    private ListIF<T> sortInsert(T element, ComparatorIF<T> comparator) {
+        if (isEmpty())
+            return this.insert(element);
+        else if (comparator.isLess(element, first))
+            return this.insert(element);
+        else
+            return ((ListDynamic<T>) tail).sortInsert(element, comparator)
+                    .insert(first);
     }
 
     /**

@@ -1,5 +1,6 @@
 package Classes;
 
+import Ifaces.ComparatorIF;
 import Ifaces.ListIF;
 import Ifaces.QueryDepot;
 
@@ -41,6 +42,15 @@ public class QueryDepotList implements QueryDepot {
      */
     @Override
     public int getFreqQuery(String q) {
+        //REVISE: Test this method
+        if(queryList.isEmpty())
+            return 0;
+        ListIterator<Query> iter = (ListIterator<Query>) queryList.getIterator();
+        do{
+            Query tmp = iter.getNext();
+            if(tmp.getText().equals(q))
+                return tmp.getFreq();
+        }while(iter.hasNext());
         return 0;
     }
 
@@ -54,7 +64,21 @@ public class QueryDepotList implements QueryDepot {
      */
     @Override
     public ListIF<Query> listOfQueries(String prefix) {
-        return null;
+        //REVISE: probar esta función
+        ListIF<Query> unorderedList = new ListDynamic<Query>();
+        ListIterator<Query> queryIT = (ListIterator <Query>) queryList.getIterator();
+
+        //Recorremos toda la lista de consultas
+        do{
+            Query temp = queryIT.getNext();
+
+            //Comprobamos si la consulta empieza por el prefijo dado y en caso afirmativo lo añadimos a la lista que hemos creado
+            if(temp.getText().startsWith(prefix))
+                unorderedList.insert(temp);
+        }while(queryIT.hasNext());//Hasta el final
+
+        //Devolvemos la lista ordenada ussando el comparador que hemos creado para este fin
+        return unorderedList.sort(new ComparatorQuery());
     }
 
     /**
@@ -65,8 +89,30 @@ public class QueryDepotList implements QueryDepot {
      */
     @Override
     public void incFreqQuery(String q) {
+        //REVISE: Revisar funcion incFreqQuery posible uso incorrecto del iterador
 
+        //Si la lista esta vacia insertamos directamente el elemento
+        if(queryList.isEmpty())
+            queryList.insert(new Query(q));
+        else {
+        //En caso contrario buscamos el elemento y se ha encontrado aumentamos su frecuencia
+            boolean found = false;
+            ListIterator<Query> lIterator = (ListIterator<Query>) queryList.getIterator();
+            do{
+                Query tmp = lIterator.getNext();
+                if(tmp.getText().equals(q)){
+                    found = true;
+                    tmp.setFreq(tmp.getFreq()+1);
+                }
+            }while (!found && lIterator.hasNext());
+
+            //En caso de que no se haya encontrado lo añadimos a la lista
+            if(!found)
+                queryList.insert(new Query(q));
+        }
     }
+
+
 
     /**
      * Decrementa en uno la frecuencia de una consulta en el depósito
@@ -78,6 +124,29 @@ public class QueryDepotList implements QueryDepot {
      */
     @Override
     public void decFreqQuery(String q) {
+        //REVISE: Revisar funcion decFreqQuery
+        boolean found=false;
 
+        ListDynamic<Query> actual = queryList;
+        ListDynamic<Query> prev = null;
+        Query tmp = null;
+
+        do{
+            if( (tmp=actual.getFirst()).getText().equals(q)){
+                if(tmp.getFreq() != 1)
+                    tmp.setFreq(tmp.getFreq() - 1);
+                else{
+                    if(prev==null)
+                        queryList = (ListDynamic<Query>) actual.getTail();
+                    else{
+                        prev.setTail(actual.getTail());
+                        actual.setTail(null);
+                    }
+                }
+                found = true;
+            }
+            prev = actual;
+            actual = (ListDynamic<Query>) actual.getTail();
+        }while(!found && !actual.isEmpty());
     }
 }
