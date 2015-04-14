@@ -1,6 +1,6 @@
-package Classes;
-
 import Ifaces.QueryDepot;
+import structs.QueryDepotList;
+import structs.QueryDepotTree;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

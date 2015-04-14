@@ -1,4 +1,4 @@
-package Classes;
+package structs.tree;
 
 
 import Ifaces.BTreeIF;
@@ -6,8 +6,9 @@ import Ifaces.IteratorIF;
 
 public class BTreeDynamic<T> implements BTreeIF<T> {
 	private T root;
-	private BTreeIF<T> left;
-	private BTreeIF<T> right;
+	protected BTreeIF<T> left;
+	protected BTreeIF<T> right;
+	protected boolean mainNode;
 
 	public BTreeDynamic() {
 		this.root = null;
@@ -17,7 +18,6 @@ public class BTreeDynamic<T> implements BTreeIF<T> {
 
 	public BTreeDynamic(T element) {
 		this();
-		this.setRoot(element);
 	}
 
 	public BTreeDynamic(BTreeIF<T> tree) {
@@ -28,6 +28,10 @@ public class BTreeDynamic<T> implements BTreeIF<T> {
 		this.setRoot(tRoot);
 		this.setLeftChild(new BTreeDynamic<T>(tLeft));
 		this.setRightChild(new BTreeDynamic<T>(tRight));
+	}
+
+	public boolean isMainNode() {
+		return this.root == null;
 	}
 
 	@Override

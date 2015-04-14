@@ -1,4 +1,4 @@
-package Classes;
+package structs.list;
 
 import Ifaces.IteratorIF;
 import Ifaces.ListIF;
@@ -12,7 +12,7 @@ public class ListIterator<T> implements IteratorIF<T> {
     private ListIF<T> restart;
 
     /**
-     * Constructor para Classes.ListIterator
+     * Constructor para structs.list.ListIterator
      * @param handler el manejador de listas.
      */
     public ListIterator(ListIF<T> handler) {

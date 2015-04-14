@@ -1,6 +1,6 @@
 package Ifaces;
 
-import Classes.Query;
+import structs.Query;
 
 
 

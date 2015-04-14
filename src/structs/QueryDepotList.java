@@ -1,8 +1,9 @@
-package Classes;
+package structs;
 
-import Ifaces.ComparatorIF;
 import Ifaces.ListIF;
 import Ifaces.QueryDepot;
+import structs.list.ListDynamic;
+import structs.list.ListIterator;
 
 /**
  * Created by dansanp on 18/3/15.

@@ -1,4 +1,4 @@
-package Classes;
+package structs.list;
 
 import Ifaces.ComparatorIF;
 import Ifaces.IteratorIF;

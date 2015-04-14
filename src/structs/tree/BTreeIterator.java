@@ -1,10 +1,13 @@
-package Classes;
+package structs.tree;
 
 
 import Ifaces.BTreeIF;
 import Ifaces.IteratorIF;
 import Ifaces.QueueIF;
 import Ifaces.StackIF;
+import structs.queue.QueueDynamic;
+import structs.queue.QueueIterator;
+import structs.stack.StackDynamic;
 
 public class BTreeIterator<T> implements IteratorIF<T> {
     private IteratorIF<T> iterator;
