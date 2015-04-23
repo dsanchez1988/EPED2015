@@ -13,7 +13,7 @@ public class QueryDepotList implements QueryDepot {
     private ListDynamic<Query> queryList;
 
     public QueryDepotList(){
-        this.queryList = null;
+        this.queryList = new ListDynamic<Query>();
     }
 
     /**
@@ -43,7 +43,6 @@ public class QueryDepotList implements QueryDepot {
      */
     @Override
     public int getFreqQuery(String q) {
-        //REVISE: Test this method
         if(queryList.isEmpty())
             return 0;
         ListIterator<Query> iter = (ListIterator<Query>) queryList.getIterator();
@@ -65,7 +64,6 @@ public class QueryDepotList implements QueryDepot {
      */
     @Override
     public ListIF<Query> listOfQueries(String prefix) {
-        //REVISE: probar esta función
         ListIF<Query> unorderedList = new ListDynamic<Query>();
         ListIterator<Query> queryIT = (ListIterator <Query>) queryList.getIterator();
 
@@ -90,7 +88,6 @@ public class QueryDepotList implements QueryDepot {
      */
     @Override
     public void incFreqQuery(String q) {
-        //REVISE: Revisar funcion incFreqQuery posible uso incorrecto del iterador
 
         //Si la lista esta vacia insertamos directamente el elemento
         if(queryList.isEmpty())

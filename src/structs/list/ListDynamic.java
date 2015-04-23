@@ -146,7 +146,7 @@ public class ListDynamic <T> implements ListIF<T> {
     private ListIF<T> sortInsert(T element, ComparatorIF<T> comparator) {
         if (isEmpty())
             return this.insert(element);
-        else if (comparator.isLess(element, first))
+        else if (comparator.isGreater(element, first))
             return this.insert(element);
         else
             return ((ListDynamic<T>) tail).sortInsert(element, comparator)

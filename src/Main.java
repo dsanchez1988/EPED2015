@@ -1,18 +1,23 @@
+import Ifaces.ListIF;
 import Ifaces.QueryDepot;
+import structs.Query;
 import structs.QueryDepotList;
 import structs.QueryDepotTree;
+import structs.list.ListIterator;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Main {
     public static final double REPETICIONES=10;
 
     public static void main(String[] args) {
-        if (args.length !=3 || !args[0].equals("L") || !args[0].equals("T") ) {
+        System.out.println(Arrays.toString(args));
+        if (args.length !=3 || (!args[0].equals("L") && !args[0].equals("T")) ) {
             System.out.println("Número de parametros erroneos\n" +
                     "El programa debe ejecutarse usando el comando " +
                     "\"java -jar eped2015.jar <estructura> <fichero_consultas> <fichero_operaciones>\"\n\n" +
@@ -63,25 +68,42 @@ public class Main {
                 e.printStackTrace();
             }
 
+            System.out.println("Consultas almacenadas: " + qd.numQueries() + ".");
+
             //Recorremos todas las operaciones haciendo las mediciones pertinentes
             for(int i=0; i<ops.size();i++){
                 Operations op=ops.get(i);
                 long tInit;
                 long tEnd;
-                tInit=System.currentTimeMillis();
-                if(op.getOperationType()==Operations.FREQUENCY)
+                double duracion=0;
+                int freq=0;
+
+                if(op.getOperationType()==Operations.FREQUENCY){
+                    tInit=System.currentTimeMillis();
                     for (int j = 0; j < REPETICIONES; j++) {
-                        int freq=qd.getFreqQuery(op.getText());
-                        System.out.println("Frecuencia de la consulta \""+op.getText()+"\": "+freq);
+                        freq=qd.getFreqQuery(op.getText());
                     }
-                else{
-                    for (int j = 0; j < REPETICIONES; j++) {
-                        System.out.println("Las sugerencias para el prefijo \""+op.getText()+"\"son:");
-                    }
+                    tEnd=System.currentTimeMillis();
+                    duracion=((double)tEnd-(double)tInit)/REPETICIONES;
+                    System.out.println("La frecuencia de  \""+op.getText()+"\" es: "+freq+".");
                 }
-                tEnd=System.currentTimeMillis();
-                double duracion=((double)tEnd-(double)tInit)/REPETICIONES;
-                System.out.println("COSTE DE OPERACION= "+duracion);
+                else{
+                    ListIF<Query> lista=null;
+                    tInit=System.currentTimeMillis();
+                    for (int j = 0; j < REPETICIONES; j++) {
+                        lista = qd.listOfQueries(op.getText());
+                    }
+                    tEnd=System.currentTimeMillis();
+                    duracion=((double)tEnd-(double)tInit)/REPETICIONES;
+                    System.out.println("Las sugerencias para el prefijo \"" + op.getText() + "\" son:");
+                    ListIterator<Query> lIt= (ListIterator<Query>)lista.getIterator();
+                    do{
+                        Query q = lIt.getNext();
+                        System.out.println("\t\"" + q.getText() + "\" con frecuendia " + q.getFreq());
+                    }while(lIt.hasNext());
+                }
+
+                System.out.println("-Tiempo: "+duracion);
             }
         }
 

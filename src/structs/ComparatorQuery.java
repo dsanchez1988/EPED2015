@@ -7,7 +7,7 @@ import Ifaces.ComparatorIF;
  */
 public class ComparatorQuery implements ComparatorIF<Query> {
 
-    //REVISE: Revisar implementaciones
+    //REVISE: Revisar comparador y ver si hace falta cambiar el orden de las operaciones
     /**
      * Compara dos elementos para indicar si el primero es menor, igual o mayor que el segundo elemento
      *

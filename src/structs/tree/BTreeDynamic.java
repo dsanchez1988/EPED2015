@@ -92,6 +92,15 @@ public class BTreeDynamic<T> implements BTreeIF<T> {
 				|| this.right.contains(element);
 	}
 
+	public int getFreq (String str){
+		//Si es nulo
+		if(this.root==null)
+			return 0;
+		//TODO: Completar método
+		return 0;
+	}
+
+
 	/*@Override
 	//b�squeda con centinela
 	public boolean contains(T element) {
@@ -116,6 +125,11 @@ public class BTreeDynamic<T> implements BTreeIF<T> {
 				* ((left == null) ? 0 : left.hashCode())
 				+ ((right == null) ? 0 : right.hashCode());
 	}
+
+	public boolean isFinalNode(){
+		return (left == null) && (right == null);
+	}
+
 
 	/*
 	 * @SuppressWarnings("unchecked")

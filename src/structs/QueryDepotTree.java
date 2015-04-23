@@ -2,11 +2,21 @@ package structs;
 
 import Ifaces.ListIF;
 import Ifaces.QueryDepot;
+import structs.tree.BTreeDynamic;
+import structs.tree.BTreeIterator;
+import structs.tree.BTreeNode;
 
 /**
  * Created by Daniel on 12/04/2015.
  */
 public class QueryDepotTree implements QueryDepot {
+
+    private BTreeDynamic<BTreeNode> queryTree;
+
+    public QueryDepotTree() {
+        queryTree = new BTreeDynamic<BTreeNode>();
+    }
+
     /**
      * Devuelve el número de consultas diferentes (sin contar repeticiones)
      * que hay almacenadas en el depósito
@@ -15,7 +25,16 @@ public class QueryDepotTree implements QueryDepot {
      */
     @Override
     public int numQueries() {
-        return 0;
+        if (queryTree.isEmpty())
+            return 0;
+        BTreeIterator<BTreeNode> nodeIterator = (BTreeIterator<BTreeNode>) this.queryTree.getIterator(BTreeDynamic.INORDER);
+        int finalNodeCount=0;
+        do{
+            BTreeNode tmpNode = nodeIterator.getNext();
+            if(!tmpNode.isFinalNode())
+                finalNodeCount++;
+        }while(nodeIterator.hasNext());
+        return finalNodeCount;
     }
 
     /**
@@ -26,6 +45,21 @@ public class QueryDepotTree implements QueryDepot {
      */
     @Override
     public int getFreqQuery(String q) {
+        if(q.length()==0 ||
+                q == null ||
+                (queryTree.getLeftChild() == null && queryTree.getRightChild() == null))
+            return 0;
+        int freq=inFreqQuery(q,(BTreeDynamic)queryTree.getLeftChild());
+        if (freq>0)
+            return freq;
+        else
+            return inFreqQuery(q,(BTreeDynamic)queryTree.getRightChild());
+    }
+
+    private int inFreqQuery(String q,BTreeDynamic<BTreeNode> child){
+        if (q.isEmpty()){
+
+        }
         return 0;
     }
 
@@ -50,7 +84,10 @@ public class QueryDepotTree implements QueryDepot {
      */
     @Override
     public void incFreqQuery(String q) {
+        char[] stringChars = q.toCharArray();
+    }
 
+    private void internalIncFreqQuery(String q,BTreeDynamic<BTreeNode> tree){
     }
 
     /**
