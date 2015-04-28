@@ -27,4 +27,8 @@ public class Query{
         return freq;
     }
 
+    @Override
+    public String toString() {
+        return "La frecuencia de  \""+ text +"\" es: " + freq + ".";
+    }
 }

@@ -1,5 +1,6 @@
 package structs;
 
+import Ifaces.ComparatorIF;
 import Ifaces.ListIF;
 import Ifaces.QueryDepot;
 import structs.list.ListDynamic;
@@ -38,20 +39,27 @@ public class QueryDepotList implements QueryDepot {
     /**
      * Consulta la frecuencia de una consulta en el depósito
      *
-     * @param q el texto de la consulta
+     * @param t el texto de la consulta
      * @return la frecuencia de la consulta. Si no está devolverá 0
      */
     @Override
-    public int getFreqQuery(String q) {
-        if(queryList.isEmpty())
+    public int getFreqQuery(String t) {
+        Query q = searchQuery(t);
+        if (q == null) {
             return 0;
+        }
+        else
+            return q.getFreq();
+    }
+
+    private Query searchQuery(String t){
         ListIterator<Query> iter = (ListIterator<Query>) queryList.getIterator();
-        do{
-            Query tmp = iter.getNext();
-            if(tmp.getText().equals(q))
-                return tmp.getFreq();
-        }while(iter.hasNext());
-        return 0;
+        while (iter.hasNext()){
+            Query temp = iter.getNext();
+            if (temp.getText().equals(t))
+                return temp;
+        }
+        return null;
     }
 
     /**
@@ -88,28 +96,24 @@ public class QueryDepotList implements QueryDepot {
      */
     @Override
     public void incFreqQuery(String q) {
-
+        Query s;
         //Si la lista esta vacia insertamos directamente el elemento
         if(queryList.isEmpty())
             queryList.insert(new Query(q));
-        else {
-        //En caso contrario buscamos el elemento y se ha encontrado aumentamos su frecuencia
-            boolean found = false;
-            ListIterator<Query> lIterator = (ListIterator<Query>) queryList.getIterator();
-            do{
-                Query tmp = lIterator.getNext();
-                if(tmp.getText().equals(q)){
-                    found = true;
-                    tmp.setFreq(tmp.getFreq()+1);
-                }
-            }while (!found && lIterator.hasNext());
-
-            //En caso de que no se haya encontrado lo añadimos a la lista
-            if(!found)
-                queryList.insert(new Query(q));
-        }
+        else if ((s = searchQuery(q)) != null)
+            s.setFreq(s.getFreq()+1);
+        else
+            sortInsert(new Query(q), queryList, new ComparatorQueryAlphabet());
     }
 
+    private ListDynamic<Query> sortInsert(Query q,ListDynamic<Query> list, ComparatorIF<Query> comp){
+        if(list.isEmpty())
+            return (ListDynamic<Query>) list.insert(q);
+        else if(comp.isGreater(q,list.getFirst()))
+            return (ListDynamic<Query>)list.insert(q);
+
+        return (ListDynamic<Query>)this.sortInsert(q, (ListDynamic<Query>) list.getTail(), comp).insert(q);
+    }
 
 
     /**

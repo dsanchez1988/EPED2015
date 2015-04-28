@@ -17,12 +17,13 @@ public class ComparatorQuery implements ComparatorIF<Query> {
      */
     @Override
     public int compare(Query e1, Query e2) {
-        if(this.isEqual(e1,e2))
-            return this.EQUAL;
-        else if(this.isGreater(e1,e2))
-            return this.GREATER;
-        else
+        if (e1.getFreq() < e2.getFreq() ||
+                (e1.getFreq() == e2.getFreq() && e1.getText().compareTo(e2.getText()) > 0))
             return this.LESS;
+        else if (e1.getFreq() > e2.getFreq() ||
+                (e1.getFreq() == e2.getFreq() && e1.getText().compareTo(e2.getText()) < 0))
+            return this.GREATER;
+        return this.EQUAL;
     }
 
     /**
@@ -34,10 +35,7 @@ public class ComparatorQuery implements ComparatorIF<Query> {
      */
     @Override
     public boolean isLess(Query e1, Query e2) {
-        if(e1.getFreq() == e2.getFreq())
-            return e1.getText().compareTo(e2.getText()) > 0;
-        else
-            return e1.getFreq() < e2.getFreq();
+        return this.compare(e1,e2) == this.LESS;
     }
 
     /**
@@ -50,7 +48,7 @@ public class ComparatorQuery implements ComparatorIF<Query> {
     @Override
     public boolean isEqual(Query e1, Query e2) {
         //Devuelve siempre falso, en una lista no puede haber dos querys iguales
-        return false;
+        return this.compare(e1,e2) == this.EQUAL;
     }
 
     /**
@@ -62,9 +60,6 @@ public class ComparatorQuery implements ComparatorIF<Query> {
      */
     @Override
     public boolean isGreater(Query e1, Query e2) {
-        if(e1.getFreq() == e2.getFreq())
-        return e1.getText().compareTo(e2.getText()) < 0;
-    else
-        return e1.getFreq() > e2.getFreq();
+        return this.compare(e1,e2) == this.GREATER;
     }
 }
