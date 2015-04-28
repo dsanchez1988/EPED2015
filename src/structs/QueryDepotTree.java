@@ -2,19 +2,17 @@ package structs;
 
 import Ifaces.ListIF;
 import Ifaces.QueryDepot;
-import structs.tree.BTreeDynamic;
-import structs.tree.BTreeIterator;
-import structs.tree.BTreeNode;
+import structs.tree.*;
 
 /**
  * Created by Daniel on 12/04/2015.
  */
 public class QueryDepotTree implements QueryDepot {
 
-    private BTreeDynamic<BTreeNode> queryTree;
+    private TreeDynamic<TreeNode> queryTree;
 
     public QueryDepotTree() {
-        queryTree = new BTreeDynamic<BTreeNode>();
+        queryTree = new TreeDynamic<TreeNode>();
     }
 
     /**
@@ -25,16 +23,7 @@ public class QueryDepotTree implements QueryDepot {
      */
     @Override
     public int numQueries() {
-        if (queryTree.isEmpty())
-            return 0;
-        BTreeIterator<BTreeNode> nodeIterator = (BTreeIterator<BTreeNode>) this.queryTree.getIterator(BTreeDynamic.INORDER);
-        int finalNodeCount=0;
-        do{
-            BTreeNode tmpNode = nodeIterator.getNext();
-            if(!tmpNode.isFinalNode())
-                finalNodeCount++;
-        }while(nodeIterator.hasNext());
-        return finalNodeCount;
+        return 0;
     }
 
     /**
@@ -45,23 +34,10 @@ public class QueryDepotTree implements QueryDepot {
      */
     @Override
     public int getFreqQuery(String q) {
-        if(q.length()==0 ||
-                q == null ||
-                (queryTree.getLeftChild() == null && queryTree.getRightChild() == null))
-            return 0;
-        int freq=inFreqQuery(q,(BTreeDynamic)queryTree.getLeftChild());
-        if (freq>0)
-            return freq;
-        else
-            return inFreqQuery(q,(BTreeDynamic)queryTree.getRightChild());
-    }
-
-    private int inFreqQuery(String q,BTreeDynamic<BTreeNode> child){
-        if (q.isEmpty()){
-
-        }
         return 0;
     }
+
+
 
     /**
      * Dado un prefijo de consulta, devuelve una lista ordenada por
@@ -87,7 +63,7 @@ public class QueryDepotTree implements QueryDepot {
         char[] stringChars = q.toCharArray();
     }
 
-    private void internalIncFreqQuery(String q,BTreeDynamic<BTreeNode> tree){
+    private void internalIncFreqQuery(String q,TreeDynamic<TreeNode> tree){
     }
 
     /**
