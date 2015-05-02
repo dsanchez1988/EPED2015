@@ -1,7 +1,10 @@
 package structs;
 
+import Ifaces.IteratorIF;
 import Ifaces.ListIF;
 import Ifaces.QueryDepot;
+import Ifaces.TreeIF;
+import structs.list.ListIterator;
 import structs.tree.*;
 
 /**
@@ -15,65 +18,64 @@ public class QueryDepotTree implements QueryDepot {
         queryTree = new TreeDynamic<TreeNode>();
     }
 
-    /**
-     * Devuelve el número de consultas diferentes (sin contar repeticiones)
-     * que hay almacenadas en el depósito
-     *
-     * @return el número de consultas diferentes almacenadas
-     */
     @Override
     public int numQueries() {
-        return 0;
+        int i=0;
+        TreeIterator<TreeNode> it = (TreeIterator<TreeNode>) queryTree.getIterator(TreeIF.PREORDER);
+        while(it.hasNext()){
+            if(it.getNext().isLeaf())
+                i++;
+        }
+        return i;
     }
 
-    /**
-     * Consulta la frecuencia de una consulta en el depósito
-     *
-     * @param q el texto de la consulta
-     * @return la frecuencia de la consulta. Si no está devolverá 0
-     */
+
     @Override
     public int getFreqQuery(String q) {
         return 0;
     }
 
 
-
-    /**
-     * Dado un prefijo de consulta, devuelve una lista ordenada por
-     * frecuencias de mayor a menor, de todas las consultas almacenadas
-     * en el depósito que comiencen por dicho prefijo
-     *
-     * @param prefix el prefijo
-     * @return la lista de consultas ordenadas por frecuencias y orden lexicográfico en caso de coincidencia de frecuencia
-     */
     @Override
     public ListIF<Query> listOfQueries(String prefix) {
         return null;
     }
 
-    /**
-     * Incrementa en uno la frecuencia de una consulta en el depósito
-     * Si la consulta no existía en la estructura, la deberá añadir
-     *
-     * @param q el texto de la consulta
-     */
     @Override
     public void incFreqQuery(String q) {
-        char[] stringChars = q.toCharArray();
+
+    }
+
+
+
+    //Devuelve el LeafNode de la lista de hijos dada
+    private TreeLeaf getLeaf(ListIF<TreeIF<TreeNode>> childList){
+        if (childList.isEmpty())
+            return null;
+        else{
+            ListIterator<TreeIF<TreeNode>> childIterator = (ListIterator <TreeIF<TreeNode>>)childList.getIterator();
+            while(childIterator.hasNext()){
+                TreeDynamic<TreeNode> t = (TreeDynamic) childIterator.getNext();
+                if(t.getRoot().isLeaf())
+                    return (TreeLeaf) t.getRoot();
+            }
+            return null;
+        }
+    }
+
+    private TreeDynamic<TreeNode> createTree (String query){
+        if (query.length() == 0){
+            return new TreeDynamic<TreeNode>(new TreeLeaf());
+        }
+        else{
+            TreeDynamic<TreeNode> a = new TreeDynamic<TreeNode>(new TreeInternalNode(query.charAt(0)));
+            a.addChild(createTree(query.substring(1)));
+            return a;
+        }
     }
 
     private void internalIncFreqQuery(String q,TreeDynamic<TreeNode> tree){
     }
-
-    /**
-     * Decrementa en uno la frecuencia de una consulta en el depósito
-     * Si la frecuencia decrementrada resultase ser 0, deberá eliminar
-     * la información referente a la consulta del depósito
-     * (Precondición) la consulta debe estat ya en el depósito
-     *
-     * @param q el texto de la consulta
-     */
     @Override
     public void decFreqQuery(String q) {
 
