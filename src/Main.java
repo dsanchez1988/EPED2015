@@ -10,13 +10,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Main {
-    public static final double REPETICIONES=10;
+    public static final double REPETICIONES=1000;
 
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(args));
         if (args.length !=3 || (!args[0].equals("L") && !args[0].equals("T")) ) {
             System.out.println("Número de parametros erroneos\n" +
                     "El programa debe ejecutarse usando el comando " +
@@ -97,10 +95,10 @@ public class Main {
                     duracion=((double)tEnd-(double)tInit)/REPETICIONES;
                     System.out.println("Las sugerencias para el prefijo \"" + op.getText() + "\" son:");
                     ListIterator<Query> lIt= (ListIterator<Query>)lista.getIterator();
-                    do{
+                    while(lIt.hasNext()) {
                         Query q = lIt.getNext();
-                        System.out.println("\t\"" + q.getText() + "\" con frecuendia " + q.getFreq());
-                    }while(lIt.hasNext());
+                        System.out.println("\t\"" + q.getText() + "\" con frecuencia " + q.getFreq());
+                    }
                 }
 
                 System.out.println("-Tiempo: "+duracion);

@@ -1,8 +1,10 @@
 package structs;
 
+import Ifaces.ComparatorIF;
 import Ifaces.ListIF;
 import Ifaces.QueryDepot;
 import Ifaces.TreeIF;
+import structs.list.ListDynamic;
 import structs.list.ListIterator;
 import structs.tree.*;
 
@@ -67,11 +69,59 @@ public class QueryDepotTree implements QueryDepot {
 
     @Override
     public ListIF<Query> listOfQueries(String prefix) {
-        //TODO:Implementar
-        return null;
+        //Obtenemos el treeNode correspondiente al prefijo
+        TreeDynamic<TreeNode> node = getPrefixNode(prefix,queryTree);
+        if (node == null) {
+            return new ListDynamic<Query>();
+        }
+
+        return populateListOfQueries(prefix,node,new String(),new ListDynamic<Query>());
+    }
+
+    private TreeDynamic<TreeNode> getPrefixNode (String prefix, TreeDynamic<TreeNode> tree){
+        if (tree == null || prefix.isEmpty())
+            return tree;
+
+        return getPrefixNode(prefix.substring(1), getChild(tree.getChildren(), prefix.charAt(0)));
+
+    }
+
+    private ListIF<Query> populateListOfQueries(String prefix, TreeDynamic<TreeNode> tree, String str, ListIF<Query> list){
+        ListIF<TreeIF<TreeNode>> children = tree.getChildren();
+        TreeLeaf l = getLeaf(children);
+        if (l != null) {
+            Query q = new Query(prefix + str);
+            q.setFreq(l.getValue());
+            list = sortInsert(q, (ListDynamic<Query>) list, new ComparatorQuery());
+        }
+
+        if (children.isEmpty())
+            return list;
+
+        ListIterator<TreeIF<TreeNode>> it = (ListIterator<TreeIF<TreeNode>>) children.getIterator();
+        while (it.hasNext()){
+            TreeIF<TreeNode> child = it.getNext();
+            if(!child.getRoot().isLeaf()){
+                TreeInternalNode n = (TreeInternalNode) child.getRoot();
+                list = populateListOfQueries(prefix,
+                        (TreeDynamic<TreeNode>) child,
+                        str+n.getValue(),
+                        list);
+            }
+        }
+        return list;
     }
 
 
+    //Función sortinsert de QueryDepotList para insertar los elementos a devolver por listOfQueries de manera ordenada
+    private ListDynamic<Query> sortInsert(Query q,ListDynamic<Query> list, ComparatorIF<Query> comp){
+        if(list.isEmpty())
+            return (ListDynamic<Query>) list.insert(q);
+        else if(comp.isGreater(q,list.getFirst()))
+            return (ListDynamic<Query>)list.insert(q);
+
+        return (ListDynamic<Query>) sortInsert(q, (ListDynamic<Query>) list.getTail(), comp).insert(list.getFirst());
+    }
 
     @Override
     public void incFreqQuery(String q) {
@@ -98,7 +148,7 @@ public class QueryDepotTree implements QueryDepot {
         else{
             TreeDynamic<TreeNode> child = getChild(node.getChildren(),query.charAt(0));
             if (child == null) {
-                node.addChild(createTree(query.substring(1)));
+                node.addChild(createTree(query));
                 return;
             }
             else{
@@ -149,6 +199,48 @@ public class QueryDepotTree implements QueryDepot {
     }
     @Override
     public void decFreqQuery(String q) {
-        //TODO:Implementar
+        intDecFrecQuery(q,queryTree);
+    }
+
+    private boolean intDecFrecQuery (String q, TreeDynamic<TreeNode> tree){
+        TreeDynamic<TreeNode> child = getChild(tree.getChildren(),q.charAt(0));
+        //Si es un nodo hoja decrementamos la frecuencia y si esta es 1 le mandamos True para que elimine la hoja
+        if (child == null) {
+            TreeLeaf leaf= (TreeLeaf) tree.getRoot();
+            if(leaf.getValue()==1)
+                return true;
+            else{
+                leaf.setValue(leaf.getValue()-1);
+                return false;
+            }
+        }
+
+        //Si no es un nodo hoja comprobamos si tenemos que devolver el nodo anterior usando una llamada recursiva
+        //En caso de que no haya hijos colgando los eliminamos y comprobamos si quedan hijos
+        boolean removeNextNode = intDecFrecQuery(q.substring(1),child);
+        if(removeNextNode){
+            removeChildByChar(tree,q.charAt(0));
+        }
+        if(tree.getChildren().isEmpty())
+            return true;
+        else
+            return false;
+    }
+
+    private void removeChildByChar(TreeDynamic<TreeNode> tree, char c){
+        ListIterator<TreeIF<TreeNode>> childIterator = (ListIterator<TreeIF<TreeNode>>) tree.getChildren().getIterator();
+        int index=0;
+        boolean found=false;
+        while(!found && childIterator.hasNext()){
+            TreeIF<TreeNode> node = childIterator.getNext();
+            if(!node.getRoot().isLeaf()){
+                TreeInternalNode n = (TreeInternalNode) node.getRoot();
+                if(n.getValue() == c)
+                    found = true;
+            }
+            if(!found)
+                index++;
+        }
+        tree.removeChild(index);
     }
 }

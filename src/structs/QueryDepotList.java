@@ -54,7 +54,7 @@ public class QueryDepotList implements QueryDepot {
 
     private Query searchQuery(String t){
         ListIterator<Query> iter = (ListIterator<Query>) queryList.getIterator();
-        while (iter.hasNext()){
+        while (iter.hasNext() ){
             Query temp = iter.getNext();
             if (temp.getText().equals(t))
                 return temp;
@@ -76,13 +76,13 @@ public class QueryDepotList implements QueryDepot {
         ListIterator<Query> queryIT = (ListIterator <Query>) queryList.getIterator();
 
         //Recorremos toda la lista de consultas
-        do{
+        while(queryIT.hasNext()){
             Query temp = queryIT.getNext();
 
             //Comprobamos si la consulta empieza por el prefijo dado y en caso afirmativo lo añadimos a la lista que hemos creado
             if(temp.getText().startsWith(prefix))
                 unorderedList.insert(temp);
-        }while(queryIT.hasNext());//Hasta el final
+        }//Hasta el final
 
         //Devolvemos la lista ordenada ussando el comparador que hemos creado para este fin
         return unorderedList.sort(new ComparatorQuery());
@@ -103,7 +103,7 @@ public class QueryDepotList implements QueryDepot {
         else if ((s = searchQuery(q)) != null)
             s.setFreq(s.getFreq()+1);
         else
-            sortInsert(new Query(q), queryList, new ComparatorQueryAlphabet());
+            queryList = sortInsert(new Query(q), queryList, new ComparatorQueryAlphabet());
     }
 
     private ListDynamic<Query> sortInsert(Query q,ListDynamic<Query> list, ComparatorIF<Query> comp){
@@ -112,7 +112,7 @@ public class QueryDepotList implements QueryDepot {
         else if(comp.isGreater(q,list.getFirst()))
             return (ListDynamic<Query>)list.insert(q);
 
-        return (ListDynamic<Query>)this.sortInsert(q, (ListDynamic<Query>) list.getTail(), comp).insert(q);
+        return (ListDynamic<Query>) sortInsert(q, (ListDynamic<Query>) list.getTail(), comp).insert(list.getFirst());
     }
 
 
@@ -133,8 +133,9 @@ public class QueryDepotList implements QueryDepot {
         ListDynamic<Query> prev = null;
         Query tmp = null;
 
-        do{
-            if( (tmp=actual.getFirst()).getText().equals(q)){
+        while(!found && !actual.isEmpty()){
+            tmp=actual.getFirst();
+            if (tmp.getText().equals(q)){
                 if(tmp.getFreq() != 1)
                     tmp.setFreq(tmp.getFreq() - 1);
                 else{
@@ -149,6 +150,6 @@ public class QueryDepotList implements QueryDepot {
             }
             prev = actual;
             actual = (ListDynamic<Query>) actual.getTail();
-        }while(!found && !actual.isEmpty());
+        }
     }
 }
